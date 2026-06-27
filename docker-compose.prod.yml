@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+
+  redis:
+    image: redis:7-alpine
+    container_name: atw_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+  server:
+    image: 990216988438.dkr.ecr.us-east-1.amazonaws.com/server:latest
+    container_name: atw_server
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+
+  client:
+    image: 990216988438.dkr.ecr.us-east-1.amazonaws.com/client:latest
+    container_name: atw_client
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server
